@@ -30,8 +30,9 @@ mongoClient.connect(() => {
 server.post("/sign-up", async (req, res) => {
   //name, email, password
   const user = req.body;
+  console.log({ user });
   const validation = userSchema.validate(user);
-
+  console.log({ validation });
   if (validation.error) {
     return res.sendStatus(422);
   }
@@ -57,7 +58,6 @@ server.post("/login", async (req, res) => {
   if (validation.error) {
     return res.sendStatus(422);
   }
-
   try {
     const user = await db.collection("users").findOne({ email });
 
@@ -66,9 +66,11 @@ server.post("/login", async (req, res) => {
       return;
     }
     const isAuthorized = bcrypt.compareSync(password, user.password);
+    console.log(password, user.password);
     if (isAuthorized) {
       const token = uuid();
-      res.send(token);
+      res.status(200).send({ token });
+      return;
     }
     res.sendStatus(401);
   } catch (error) {
