@@ -22,7 +22,10 @@ const userSchema = joi.object({
 });
 
 const valueSchema = joi.object({
-  addValue: joi.number().required(),
+  addValue: joi
+    .string()
+    .pattern(/^[\d,.?!]+$/)
+    .required(),
   description: joi.string().required(),
 });
 
