@@ -129,6 +129,6 @@ server.post("/home/withdraw", async (req, res) => {
   }
 });
 
-server.listen(5000, () => {
-  console.log("Rodando em http://localhost:5000");
+server.listen(process.env.PORT, () => {
+  console.log("Server running on port " + process.env.PORT);
 });
