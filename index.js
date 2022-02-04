@@ -21,13 +21,18 @@ const userSchema = joi.object({
   password: joi.string().required(),
 });
 
+const valueSchema = joi.object({
+  addValue: joi.number().required(),
+  description: joi.string().required(),
+});
+
 const mongoClient = new MongoClient(process.env.MONGO_URI);
 let db;
 mongoClient.connect(() => {
   db = mongoClient.db("mywallet");
 });
 
-server.post("/sign-up", async (req, res) => {
+server.post("/auth/sign-up", async (req, res) => {
   //name, email, password
   const user = req.body;
   const validation = userSchema.validate(user);
@@ -40,9 +45,6 @@ server.post("/sign-up", async (req, res) => {
     const email = await db
       .collection("users")
       .findOne({ email: req.body.email });
-
-    console.log(email);
-    console.log(user.email);
 
     if (email) {
       res.sendStatus(409);
@@ -59,7 +61,7 @@ server.post("/sign-up", async (req, res) => {
   }
 });
 
-server.post("/login", async (req, res) => {
+server.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
   const validation = loginSchema.validate({ email, password });
 
@@ -86,7 +88,43 @@ server.post("/login", async (req, res) => {
   }
 });
 
-server.get("/home");
+server.post("/home/deposit", async (req, res) => {
+  const validation = valueSchema.validate(req.body);
+
+  if (validation.error) {
+    res
+      .status(422)
+      .send(validation.error.details.map((error) => error.message));
+    return;
+  }
+
+  try {
+    await db.collection("deposit").insertOne(req.body);
+    res.sendStatus(201);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+server.post("/home/withdraw", async (req, res) => {
+  const validation = valueSchema.validate(req.body);
+
+  if (validation.error) {
+    res
+      .status(422)
+      .send(validation.error.details.map((error) => error.message));
+    return;
+  }
+
+  try {
+    await db.collection("withdraw").insertOne(req.body);
+    res.sendStatus(201);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
 
 server.listen(5000, () => {
   console.log("Rodando em http://localhost:5000");
