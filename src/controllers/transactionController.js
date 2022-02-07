@@ -1,8 +1,10 @@
 import db from "../database.js";
 
 export async function deposit(req, res) {
+  const deposits = req.body;
   try {
-    await db.collection("transactions").insertOne(req.body);
+    console.log(deposits);
+    await db.collection("transactions").insertOne({ ...deposits });
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
@@ -10,8 +12,9 @@ export async function deposit(req, res) {
   }
 }
 export async function withdraw(req, res) {
+  const withdraws = req.body;
   try {
-    await db.collection("transactions").insertOne(req.body);
+    await db.collection("transactions").insertOne({ ...withdraws });
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
@@ -20,12 +23,12 @@ export async function withdraw(req, res) {
 }
 
 export async function getTransaction(req, res) {
-  const { session } = res.locals;
+  const { user } = res.locals;
 
   try {
     const transaction = await db
       .collection("transactions")
-      .find({ userId: session.userId })
+      .find({ userId: user.userId })
       .toArray();
     res.status(200).send(transaction);
   } catch (error) {

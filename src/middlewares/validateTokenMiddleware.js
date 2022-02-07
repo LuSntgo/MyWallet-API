@@ -5,10 +5,9 @@ export async function validateTokenMiddleware(req, res, next) {
   const token = authorization?.replace("Bearer ", "");
 
   try {
-    const session = await db.collection("sessions").findOne(token);
+    const session = await db.collection("sessions").findOne({ token });
 
     if (!session) {
-      console.log("esse erro de session");
       return res.sendStatus(401);
     }
     const user = await db.collection("users").findOne({ _id: session.userId });
