@@ -3,8 +3,9 @@ import db from "../database.js";
 export async function validateTokenMiddleware(req, res, next) {
   const authorization = req.headers.authorization;
   const token = authorization?.replace("Bearer ", "");
+
   try {
-    const session = await db.collection("session").findOne({ token });
+    const session = await db.collection("sessions").findOne(token);
 
     if (!session) {
       console.log("esse erro de session");

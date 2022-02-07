@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   deposit,
   withdraw,
-  transaction,
+  getTransaction,
 } from "../controllers/transactionController.js";
 import { validateTokenMiddleware } from "../middlewares/validateTokenMiddleware.js";
 
@@ -14,6 +14,6 @@ transactionRouter.post("/home/deposit", deposit);
 
 transactionRouter.post("/home/withdraw", withdraw);
 
-transactionRouter.get("/home", transaction);
+transactionRouter.get("/home", getTransaction);
 
 export default transactionRouter;
