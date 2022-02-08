@@ -7,6 +7,6 @@ server.use(cors());
 server.use(json());
 server.use(router);
 
-server.listen(5000, () => {
-  console.log("Server running on port 5000");
+server.listen(process.env.PORT, () => {
+  console.log(`Server is listening on port ${process.env.PORT}`);
 });
